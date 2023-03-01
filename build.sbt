@@ -22,8 +22,7 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
       "org.scalatest" %% "scalatest" % "3.2.15",
       "org.scalikejdbc" %% "scalikejdbc-test" % "4.0.0"
     ).map(_ % Test),
-    Test / parallelExecution := false,
-    publishSettings
+    Test / parallelExecution := false
   )
 
 lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
@@ -40,8 +39,7 @@ lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
       "org.scalatest" %% "scalatest" % "3.2.15",
       "org.scalikejdbc" %% "scalikejdbc-test" % "3.5.0"
     ).map(_ % Test),
-    Test / parallelExecution := false,
-    publishSettings
+    Test / parallelExecution := false
   )
 
 lazy val scalikejdbc34 = (project in file("scalikejdbc34"))
@@ -58,26 +56,27 @@ lazy val scalikejdbc34 = (project in file("scalikejdbc34"))
       "org.scalatest" %% "scalatest" % "3.0.9",
       "org.scalikejdbc" %% "scalikejdbc-test" % "3.4.2"
     ).map(_ % Test),
-    Test / parallelExecution := false,
-    publishSettings
+    Test / parallelExecution := false
   )
 
-lazy val publishSettings = Seq(
-  organization := "io.github.kijuky",
-  homepage := Some(url("https://github.com/kijuky/enumeratum-scalikejdbc")),
-  licenses := Seq(
-    "Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0")
-  ),
-  developers := List(
-    Developer(
-      "kijuky",
-      "Kizuki YASUE",
-      "ikuzik@gmail.com",
-      url("https://github.com/kijuky")
-    )
-  ),
-  sonatypeCredentialHost := "s01.oss.sonatype.org",
-  sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+inThisBuild(
+  Seq(
+    organization := "io.github.kijuky",
+    homepage := Some(url("https://github.com/kijuky/enumeratum-scalikejdbc")),
+    licenses := Seq(
+      "Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0")
+    ),
+    developers := List(
+      Developer(
+        "kijuky",
+        "Kizuki YASUE",
+        "ikuzik@gmail.com",
+        url("https://github.com/kijuky")
+      )
+    ),
+    sonatypeCredentialHost := "s01.oss.sonatype.org",
+    sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+  )
 )
 
 lazy val root = (project in file(".") withId "enumeratum-scalikejdbc")
