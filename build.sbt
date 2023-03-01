@@ -22,7 +22,8 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
       "org.scalatest" %% "scalatest" % "3.2.15",
       "org.scalikejdbc" %% "scalikejdbc-test" % "4.0.0"
     ).map(_ % Test),
-    Test / parallelExecution := false
+    Test / parallelExecution := false,
+    publishSettings
   )
 
 lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
@@ -30,14 +31,6 @@ lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
     name := "enumeratum-scalikejdbc35",
     scalaVersion := "2.13.10",
     crossScalaVersions := Seq("2.13.10", "2.12.17"),
-    scalacOptions ++= {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 13)) =>
-          Seq("-Xlint")
-        case _ =>
-          Seq("-Xlint")
-      }
-    },
     libraryDependencies ++= Seq(
       "com.beachape" %% "enumeratum" % "1.7.2",
       "org.scalikejdbc" %% "scalikejdbc" % "3.5.0" % Provided
@@ -47,22 +40,15 @@ lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
       "org.scalatest" %% "scalatest" % "3.2.15",
       "org.scalikejdbc" %% "scalikejdbc-test" % "3.5.0"
     ).map(_ % Test),
-    Test / parallelExecution := false
+    Test / parallelExecution := false,
+    publishSettings
   )
 
 lazy val scalikejdbc34 = (project in file("scalikejdbc34"))
   .settings(
-    name := "enumeratum-scalikejdbc35",
+    name := "enumeratum-scalikejdbc34",
     scalaVersion := "2.13.10",
     crossScalaVersions := Seq("2.13.10", "2.12.17", "2.11.12"),
-    scalacOptions ++= {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 13)) =>
-          Seq("-Xlint")
-        case _ =>
-          Seq("-Xlint")
-      }
-    },
     libraryDependencies ++= Seq(
       "com.beachape" %% "enumeratum" % "1.7.2",
       "org.scalikejdbc" %% "scalikejdbc" % "3.4.2" % Provided
@@ -72,8 +58,27 @@ lazy val scalikejdbc34 = (project in file("scalikejdbc34"))
       "org.scalatest" %% "scalatest" % "3.0.9",
       "org.scalikejdbc" %% "scalikejdbc-test" % "3.4.2"
     ).map(_ % Test),
-    Test / parallelExecution := false
+    Test / parallelExecution := false,
+    publishSettings
   )
+
+lazy val publishSettings = Seq(
+  organization := "io.github.kijuky",
+  homepage := Some(url("https://github.com/kijuky/enumeratum-scalikejdbc")),
+  licenses := Seq(
+    "Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0")
+  ),
+  developers := List(
+    Developer(
+      "kijuky",
+      "Kizuki YASUE",
+      "ikuzik@gmail.com",
+      url("https://github.com/kijuky")
+    )
+  ),
+  versionScheme := Some("early-semver"),
+  sonatypeCredentialHost := "s01.oss.sonatype.org"
+)
 
 lazy val root = (project in file(".") withId "enumeratum-scalikejdbc")
   .aggregate(scalikejdbc4, scalikejdbc35, scalikejdbc34)
