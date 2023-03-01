@@ -76,7 +76,6 @@ lazy val publishSettings = Seq(
       url("https://github.com/kijuky")
     )
   ),
-  versionScheme := Some("early-semver"),
   sonatypeCredentialHost := "s01.oss.sonatype.org",
   sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 )
