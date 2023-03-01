@@ -77,7 +77,8 @@ lazy val publishSettings = Seq(
     )
   ),
   versionScheme := Some("early-semver"),
-  sonatypeCredentialHost := "s01.oss.sonatype.org"
+  sonatypeCredentialHost := "s01.oss.sonatype.org",
+  sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 )
 
 lazy val root = (project in file(".") withId "enumeratum-scalikejdbc")
