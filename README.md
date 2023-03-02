@@ -4,7 +4,7 @@
 
 # 使い方
 
-[enumeratum-play](https://github.com/lloydmeta/enumeratum#play-integration)と同じです。対応する○○EnumEntryに対してScalikeJDBC○○Enumを使用します。
+[enumeratum-play](https://github.com/lloydmeta/enumeratum#play-integration)と同じです。対応する○○EnumEntryに対して○○ScalikeJDBCEnumを使用します。
 
 ```scala
 import enumeratum._
