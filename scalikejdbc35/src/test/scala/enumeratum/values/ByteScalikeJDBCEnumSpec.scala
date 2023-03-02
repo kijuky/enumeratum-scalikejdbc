@@ -88,7 +88,8 @@ class ByteScalikeJDBCEnumSpec
   describe("insert") {
     it("use SQLInterpolation") { implicit dbSession =>
       // exercise
-      sql"insert into traffic_table (id, traffic_light_value) values (3, ${3})".update()
+      sql"insert into traffic_table (id, traffic_light_value) values (3, ${3})"
+        .update()
         .apply() shouldBe 1
 
       // verify

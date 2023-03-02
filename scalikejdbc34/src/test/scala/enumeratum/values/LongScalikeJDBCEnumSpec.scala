@@ -87,7 +87,8 @@ class LongScalikeJDBCEnumSpec
   describe("insert") {
     it("use SQLInterpolation") { implicit dbSession =>
       // exercise
-      sql"insert into traffic_table (id, traffic_light_value) values (3, ${3L})".update()
+      sql"insert into traffic_table (id, traffic_light_value) values (3, ${3L})"
+        .update()
         .apply() shouldBe 1
 
       // verify

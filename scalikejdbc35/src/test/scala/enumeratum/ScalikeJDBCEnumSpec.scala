@@ -42,9 +42,11 @@ class ScalikeJDBCEnumSpec
   }
 
   override def fixture(implicit session: DBSession): Unit = {
-    sql"insert into traffic_table values (1, ${"Red"})".update()
+    sql"insert into traffic_table values (1, ${"Red"})"
+      .update()
       .apply() shouldBe 1
-    sql"insert into traffic_table values (2, ${"Green"})".update()
+    sql"insert into traffic_table values (2, ${"Green"})"
+      .update()
       .apply() shouldBe 1
   }
 
@@ -79,7 +81,8 @@ class ScalikeJDBCEnumSpec
   describe("insert") {
     it("use SQLInterpolation") { implicit dbSession =>
       // exercise
-      sql"insert into traffic_table (id, traffic_light) values (3, ${"Green"})".update()
+      sql"insert into traffic_table (id, traffic_light) values (3, ${"Green"})"
+        .update()
         .apply() shouldBe 1
 
       // verify
