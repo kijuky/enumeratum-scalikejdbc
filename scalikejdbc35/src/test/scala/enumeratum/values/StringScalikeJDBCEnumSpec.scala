@@ -46,13 +46,13 @@ class StringScalikeJDBCEnumSpec
       id integer not null primary key,
       traffic_light_value varchar(64)
     )
-    """.execute.apply() shouldBe false
+    """.execute().apply() shouldBe false
   }
 
   override def fixture(implicit session: DBSession): Unit = {
-    sql"insert into traffic_table values (1, ${"red"})".update
+    sql"insert into traffic_table values (1, ${"red"})".update()
       .apply() shouldBe 1
-    sql"insert into traffic_table values (2, ${"green"})".update
+    sql"insert into traffic_table values (2, ${"green"})".update()
       .apply() shouldBe 1
   }
 
@@ -62,7 +62,7 @@ class StringScalikeJDBCEnumSpec
       val trafficLightRow: TrafficLightRow =
         sql"select * from traffic_table where id = 1"
           .map(TrafficLightRow.apply)
-          .single
+          .single()
           .apply()
           .get
 
@@ -76,7 +76,7 @@ class StringScalikeJDBCEnumSpec
       val t = TrafficLightRow.syntax("t")
       val trafficLightRow: TrafficLightRow = withSQL {
         select.from(TrafficLightRow as t).where.eq(t.id, 1)
-      }.map(TrafficLightRow.apply).single.apply().get
+      }.map(TrafficLightRow.apply).single().apply().get
 
       // verify
       trafficLightRow.id shouldBe 1
@@ -87,14 +87,14 @@ class StringScalikeJDBCEnumSpec
   describe("insert") {
     it("use SQLInterpolation") { implicit dbSession =>
       // exercise
-      sql"insert into traffic_table (id, traffic_light_value) values (3, ${"green"})".update
+      sql"insert into traffic_table (id, traffic_light_value) values (3, ${"green"})".update()
         .apply() shouldBe 1
 
       // verify
       val trafficLightRow: TrafficLightRow =
         sql"select * from traffic_table where id = 3"
           .map(TrafficLightRow.apply)
-          .single
+          .single()
           .apply()
           .get
       trafficLightRow.trafficLight shouldBe TrafficLight.Green
@@ -116,7 +116,7 @@ class StringScalikeJDBCEnumSpec
       val t = TrafficLightRow.syntax("t")
       val trafficLightRow: TrafficLightRow = withSQL {
         select.from(TrafficLightRow as t).where.eq(t.id, 3)
-      }.map(TrafficLightRow.apply).single.apply().get
+      }.map(TrafficLightRow.apply).single().apply().get
       trafficLightRow.trafficLight shouldBe TrafficLight.Green
     }
   }

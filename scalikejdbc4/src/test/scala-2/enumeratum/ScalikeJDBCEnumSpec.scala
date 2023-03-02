@@ -6,6 +6,8 @@ import org.scalatest.matchers.should.Matchers._
 import scalikejdbc._
 import scalikejdbc.scalatest.AutoRollback
 
+import scala.collection.immutable
+
 class ScalikeJDBCEnumSpec
     extends FixtureAnyFunSpec
     with AutoRollback
@@ -13,15 +15,10 @@ class ScalikeJDBCEnumSpec
 
   sealed trait TrafficLight extends EnumEntry
   object TrafficLight extends ScalikeJDBCEnum[TrafficLight] {
-    val values = findValues
     case object Red extends TrafficLight
     case object Yellow extends TrafficLight
     case object Green extends TrafficLight
-    // override val values: immutable.IndexedSeq[TrafficLight] = findValues
-    println(values)
-    println(Red)
-    println(Yellow)
-    println(Green)
+    val values: immutable.IndexedSeq[TrafficLight] = findValues
   }
 
   case class TrafficLightRow(id: Int, trafficLight: TrafficLight)

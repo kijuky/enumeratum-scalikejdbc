@@ -1,10 +1,10 @@
 # enumeratum-scalikejdbc
 
-enumeratumのscalikejdbcサポートです。
+[enumeratum](https://github.com/lloydmeta/enumeratum)の[scalikejdbc](http://scalikejdbc.org/)サポートです。
 
 # 使い方
 
-enumeratum-playと同じです。対応する○○EnumEntryに対してScalikeJDBC○○Enumを使用します。
+[enumeratum-play](https://github.com/lloydmeta/enumeratum#play-integration)と同じです。対応する○○EnumEntryに対してScalikeJDBC○○Enumを使用します。
 
 ```scala
 import enumeratum._
