@@ -12,25 +12,9 @@ class ScalikeJDBCEnumSpec
     extends FixtureAnyFunSpec
     with AutoRollback
     with BeforeAndAfterAll {
-
-  sealed trait TrafficLight extends EnumEntry
-  object TrafficLight extends ScalikeJDBCEnum[TrafficLight] {
-    case object Red extends TrafficLight
-    case object Yellow extends TrafficLight
-    case object Green extends TrafficLight
-    val values: immutable.IndexedSeq[TrafficLight] = findValues
-  }
-
-  case class TrafficLightRow(id: Int, trafficLight: TrafficLight)
-  object TrafficLightRow extends SQLSyntaxSupport[TrafficLightRow] {
-    override val tableName = "traffic_table"
-    def apply(rs: WrappedResultSet) =
-      new TrafficLightRow(rs.int("id"), rs.get("traffic_light"))
-  }
-
   override def beforeAll(): Unit = {
     Class.forName("org.h2.Driver")
-    ConnectionPool.singleton("jdbc:h2:mem:scalikejdbcenumspec", "user", "pass")
+    ConnectionPool.singleton(s"jdbc:h2:mem:${getClass.getSimpleName}", "sa", "")
 
     implicit val session: DBSession = AutoSession
     sql"""
@@ -48,68 +32,177 @@ class ScalikeJDBCEnumSpec
       .apply() shouldBe 1
   }
 
-  describe("select") {
-    it("use SQLInterpolation") { implicit dbSession =>
-      // exercise
-      val trafficLightRow: TrafficLightRow =
-        sql"select * from traffic_table where id = 1"
-          .map(TrafficLightRow.apply)
-          .single
-          .apply()
-          .get
+  describe("built-in style") {
+    sealed trait TrafficLight extends EnumEntry
+    object TrafficLight extends ScalikeJDBCEnum[TrafficLight] {
+      case object Red extends TrafficLight
+      case object Yellow extends TrafficLight
+      case object Green extends TrafficLight
 
-      // verify
-      trafficLightRow.id shouldBe 1
-      trafficLightRow.trafficLight shouldBe TrafficLight.Red
+      val values: immutable.IndexedSeq[TrafficLight] = findValues
     }
 
-    it("use QueryDSL") { implicit dbSession =>
-      // exercise
-      val t = TrafficLightRow.syntax("t")
-      val trafficLightRow: TrafficLightRow = withSQL {
-        select.from(TrafficLightRow as t).where.eq(t.id, 1)
-      }.map(TrafficLightRow.apply).single.apply().get
+    case class TrafficLightRow(id: Int, trafficLight: TrafficLight)
+    object TrafficLightRow extends SQLSyntaxSupport[TrafficLightRow] {
+      override val tableName = "traffic_table"
 
-      // verify
-      trafficLightRow.id shouldBe 1
-      trafficLightRow.trafficLight shouldBe TrafficLight.Red
+      def apply(rs: WrappedResultSet) =
+        new TrafficLightRow(rs.int("id"), rs.get("traffic_light"))
+    }
+
+    describe("select") {
+      it("use SQLInterpolation") { implicit dbSession =>
+        // exercise
+        val trafficLightRow: TrafficLightRow =
+          sql"select * from traffic_table where id = 1"
+            .map(TrafficLightRow.apply)
+            .single
+            .apply()
+            .get
+
+        // verify
+        trafficLightRow.id shouldBe 1
+        trafficLightRow.trafficLight shouldBe TrafficLight.Red
+      }
+
+      it("use QueryDSL") { implicit dbSession =>
+        // exercise
+        val t = TrafficLightRow.syntax("t")
+        val trafficLightRow: TrafficLightRow = withSQL {
+          select.from(TrafficLightRow as t).where.eq(t.id, 1)
+        }.map(TrafficLightRow.apply).single.apply().get
+
+        // verify
+        trafficLightRow.id shouldBe 1
+        trafficLightRow.trafficLight shouldBe TrafficLight.Red
+      }
+    }
+
+    describe("insert") {
+      it("use SQLInterpolation") { implicit dbSession =>
+        // exercise
+        sql"insert into traffic_table (id, traffic_light) values (3, ${"Green"})".update
+          .apply() shouldBe 1
+
+        // verify
+        val trafficLightRow: TrafficLightRow =
+          sql"select * from traffic_table where id = 3"
+            .map(TrafficLightRow.apply)
+            .single
+            .apply()
+            .get
+        trafficLightRow.trafficLight shouldBe TrafficLight.Green
+      }
+
+      it("use QueryDSL") { implicit dbSession =>
+        // exercise
+        val c = TrafficLightRow.column
+        applyUpdate {
+          insert
+            .into(TrafficLightRow)
+            .namedValues(
+              c.id -> 3,
+              c.trafficLight -> (TrafficLight.Green: TrafficLight)
+            )
+        } shouldBe 1
+
+        // verify
+        val t = TrafficLightRow.syntax("t")
+        val trafficLightRow: TrafficLightRow = withSQL {
+          select.from(TrafficLightRow as t).where.eq(t.id, 3)
+        }.map(TrafficLightRow.apply).single.apply().get
+        trafficLightRow.trafficLight shouldBe TrafficLight.Green
+      }
     }
   }
 
-  describe("insert") {
-    it("use SQLInterpolation") { implicit dbSession =>
-      // exercise
-      sql"insert into traffic_table (id, traffic_light) values (3, ${"Green"})".update
-        .apply() shouldBe 1
+  describe("plugin style") {
+    sealed trait TrafficLight extends EnumEntry
+    object TrafficLight extends Enum[TrafficLight] {
+      case object Red extends TrafficLight
+      case object Yellow extends TrafficLight
+      case object Green extends TrafficLight
 
-      // verify
-      val trafficLightRow: TrafficLightRow =
-        sql"select * from traffic_table where id = 3"
-          .map(TrafficLightRow.apply)
-          .single
-          .apply()
-          .get
-      trafficLightRow.trafficLight shouldBe TrafficLight.Green
+      val values: immutable.IndexedSeq[TrafficLight] = findValues
     }
 
-    it("use QueryDSL") { implicit dbSession =>
-      // exercise
-      val c = TrafficLightRow.column
-      applyUpdate {
-        insert
-          .into(TrafficLightRow)
-          .namedValues(
-            c.id -> 3,
-            c.trafficLight -> (TrafficLight.Green: TrafficLight)
-          )
-      } shouldBe 1
+    case class TrafficLightRow(id: Int, trafficLight: TrafficLight)
+    object TrafficLightRow extends SQLSyntaxSupport[TrafficLightRow] {
+      override val tableName = "traffic_table"
 
-      // verify
-      val t = TrafficLightRow.syntax("t")
-      val trafficLightRow: TrafficLightRow = withSQL {
-        select.from(TrafficLightRow as t).where.eq(t.id, 3)
-      }.map(TrafficLightRow.apply).single.apply().get
-      trafficLightRow.trafficLight shouldBe TrafficLight.Green
+      implicit val typeBinder: TypeBinder[TrafficLight] =
+        ScalikeJDBCEnum.typeBinder(TrafficLight)
+
+      def apply(rs: WrappedResultSet) =
+        new TrafficLightRow(rs.int("id"), rs.get("traffic_light"))
+    }
+
+    implicit val parameterBuilderFactory: ParameterBinderFactory[TrafficLight] =
+      ScalikeJDBCEnum.parameterBinderFactory[TrafficLight]()
+
+    describe("select") {
+      it("use SQLInterpolation") { implicit dbSession =>
+        // exercise
+        val trafficLightRow: TrafficLightRow =
+          sql"select * from traffic_table where id = 1"
+            .map(TrafficLightRow.apply)
+            .single
+            .apply()
+            .get
+
+        // verify
+        trafficLightRow.id shouldBe 1
+        trafficLightRow.trafficLight shouldBe TrafficLight.Red
+      }
+
+      it("use QueryDSL") { implicit dbSession =>
+        // exercise
+        val t = TrafficLightRow.syntax("t")
+        val trafficLightRow: TrafficLightRow = withSQL {
+          select.from(TrafficLightRow as t).where.eq(t.id, 1)
+        }.map(TrafficLightRow.apply).single.apply().get
+
+        // verify
+        trafficLightRow.id shouldBe 1
+        trafficLightRow.trafficLight shouldBe TrafficLight.Red
+      }
+    }
+
+    describe("insert") {
+      it("use SQLInterpolation") { implicit dbSession =>
+        // exercise
+        sql"insert into traffic_table (id, traffic_light) values (3, ${"Green"})".update
+          .apply() shouldBe 1
+
+        // verify
+        val trafficLightRow: TrafficLightRow =
+          sql"select * from traffic_table where id = 3"
+            .map(TrafficLightRow.apply)
+            .single
+            .apply()
+            .get
+        trafficLightRow.trafficLight shouldBe TrafficLight.Green
+      }
+
+      it("use QueryDSL") { implicit dbSession =>
+        // exercise
+        val c = TrafficLightRow.column
+        applyUpdate {
+          insert
+            .into(TrafficLightRow)
+            .namedValues(
+              c.id -> 3,
+              c.trafficLight -> (TrafficLight.Green: TrafficLight)
+            )
+        } shouldBe 1
+
+        // verify
+        val t = TrafficLightRow.syntax("t")
+        val trafficLightRow: TrafficLightRow = withSQL {
+          select.from(TrafficLightRow as t).where.eq(t.id, 3)
+        }.map(TrafficLightRow.apply).single.apply().get
+        trafficLightRow.trafficLight shouldBe TrafficLight.Green
+      }
     }
   }
 }

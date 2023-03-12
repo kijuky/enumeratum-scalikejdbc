@@ -24,6 +24,32 @@ object Greeting extends ScalikeJDBCEnum[Greeting] {
 
 TypeBinderとParameterBinderFactoryが提供されます。
 
+既存のEnumEntryに対してTypeBinderを提供する場合は、コンパニオンオブジェクトからTypeBinderを作成できます。
+
+```scala
+import enumeratum._
+
+sealed trait Greeting extends EnumEntry
+
+object Greeting extends Enum[Greeting] {
+  
+  val values = findValues
+
+  case object Hello   extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
+}
+```
+
+```scala
+import enumeratum._
+
+object TypeBinders {
+  implicit val greetingTypeBinder = ScalikeJDBCEnum.typeBinder(Greeting)
+}
+```
+
 # アーティファクト名について
 
 利用しているscalikejdbcのバージョンに応じて、アーティファクトを選択してください。
@@ -39,7 +65,3 @@ TypeBinderとParameterBinderFactoryが提供されます。
 `x.y.z.w`で管理します。
 
 最初の`x.y.z`はenumeratumのバージョンと一致します。`w`がこのライブラリのバージョンです。
-
-# 既知の不具合
-
-- Scala3において、Enum/EnumEntryのfindValuesマクロが適切に展開されないため、Scala3に対してはEnum/EnumEntryのサポートを提供していません。

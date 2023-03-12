@@ -8,21 +8,40 @@ import java.sql.PreparedStatement
 
 trait StringScalikeJDBCEnum[A <: StringEnumEntry] extends StringEnum[A] {
   implicit val typeBinder: TypeBinder[A] = {
-    TypeBinder.string.map(withValue)
+    StringScalikeJDBCEnum.typeBinder(this)
   }
 
   implicit val optionalTypeBinder: TypeBinder[Option[A]] = {
-    TypeBinder.string.map(withValueOpt)
+    StringScalikeJDBCEnum.optionalTypeBinder(this)
   }
 
-  implicit val parameterBinderFactory: ParameterBinderFactory[A] =
-    new ParameterBinderFactory[A] {
-      override def apply(entry: A): ParameterBinderWithValue =
+  implicit val parameterBinderFactory: ParameterBinderFactory[A] = {
+    StringScalikeJDBCEnum.parameterBinderFactory()
+  }
+}
+
+object StringScalikeJDBCEnum {
+  def typeBinder[E <: StringEnumEntry](e: StringEnum[E]): TypeBinder[E] = {
+    TypeBinder.string.map(e.withValue)
+  }
+
+  def optionalTypeBinder[E <: StringEnumEntry](
+    e: StringEnum[E]
+  ): TypeBinder[Option[E]] = {
+    TypeBinder.string.map(e.withValueOpt)
+  }
+
+  def parameterBinderFactory[E <: StringEnumEntry]()
+    : ParameterBinderFactory[E] = {
+    new ParameterBinderFactory[E] {
+      override def apply(entry: E): ParameterBinderWithValue = {
         new ParameterBinderWithValue() {
-          override def value: A = entry
+          override def value: E = entry
           override def apply(stmt: PreparedStatement, idx: Int): Unit = {
             stmt.setString(idx, value.value)
           }
         }
+      }
     }
+  }
 }

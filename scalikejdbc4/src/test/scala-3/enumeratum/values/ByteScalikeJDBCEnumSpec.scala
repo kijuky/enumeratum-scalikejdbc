@@ -1,15 +1,15 @@
 package enumeratum.values
 
 import org.scalatest.BeforeAndAfterAll
-import org.scalatest.Matchers._
-import org.scalatest.fixture
+import org.scalatest.funspec.FixtureAnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 import scalikejdbc._
 import scalikejdbc.scalatest.AutoRollback
 
 import scala.collection.immutable
 
-class CharScalikeJDBCEnumSpec
-    extends fixture.FunSpec
+class ByteScalikeJDBCEnumSpec
+    extends FixtureAnyFunSpec
     with AutoRollback
     with BeforeAndAfterAll {
   override def beforeAll(): Unit = {
@@ -20,28 +20,24 @@ class CharScalikeJDBCEnumSpec
     sql"""
     create table traffic_table (
       id integer not null primary key,
-      traffic_light_value character
+      traffic_light_value tinyint
     )
-    """.execute().apply() shouldBe false
+    """.execute.apply() shouldBe false
   }
 
   override def fixture(implicit session: DBSession): Unit = {
-    sql"insert into traffic_table values (1, ${'r'})"
-      .update()
-      .apply() shouldBe 1
-    sql"insert into traffic_table values (2, ${'g'})"
-      .update()
-      .apply() shouldBe 1
+    sql"insert into traffic_table values (1, ${1})".update.apply() shouldBe 1
+    sql"insert into traffic_table values (2, ${3})".update.apply() shouldBe 1
   }
 }
 
-class CharScalikeJDBCEnumBuiltInStyleSpec extends CharScalikeJDBCEnumSpec {
-  sealed abstract class TrafficLight(override val value: Char)
-      extends CharEnumEntry
-  object TrafficLight extends CharScalikeJDBCEnum[TrafficLight] {
-    case object Red extends TrafficLight('r')
-    case object Yellow extends TrafficLight('y')
-    case object Green extends TrafficLight('g')
+class ByteScalikeJDBCEnumBuiltInStyleSpec extends ByteScalikeJDBCEnumSpec {
+  sealed abstract class TrafficLight(override val value: Byte)
+      extends ByteEnumEntry
+  object TrafficLight extends ByteScalikeJDBCEnum[TrafficLight] {
+    case object Red extends TrafficLight(1)
+    case object Yellow extends TrafficLight(2)
+    case object Green extends TrafficLight(3)
 
     override val values: immutable.IndexedSeq[TrafficLight] = findValues
   }
@@ -64,7 +60,7 @@ class CharScalikeJDBCEnumBuiltInStyleSpec extends CharScalikeJDBCEnumSpec {
       val trafficLightRow: TrafficLightRow =
         sql"select * from traffic_table where id = 1"
           .map(TrafficLightRow.apply)
-          .single()
+          .single
           .apply()
           .get
 
@@ -76,9 +72,10 @@ class CharScalikeJDBCEnumBuiltInStyleSpec extends CharScalikeJDBCEnumSpec {
     it("use QueryDSL") { implicit dbSession =>
       // exercise
       val t = TrafficLightRow.syntax("t")
+      @unchecked
       val trafficLightRow: TrafficLightRow = withSQL {
         select.from(TrafficLightRow as t).where.eq(t.id, 1)
-      }.map(TrafficLightRow.apply).single().apply().get
+      }.map(TrafficLightRow.apply).single.apply().get
 
       // verify
       trafficLightRow.id shouldBe 1
@@ -89,15 +86,14 @@ class CharScalikeJDBCEnumBuiltInStyleSpec extends CharScalikeJDBCEnumSpec {
   describe("insert") {
     it("use SQLInterpolation") { implicit dbSession =>
       // exercise
-      sql"insert into traffic_table (id, traffic_light_value) values (3, ${'g'})"
-        .update()
+      sql"insert into traffic_table (id, traffic_light_value) values (3, ${3})".update
         .apply() shouldBe 1
 
       // verify
       val trafficLightRow: TrafficLightRow =
         sql"select * from traffic_table where id = 3"
           .map(TrafficLightRow.apply)
-          .single()
+          .single
           .apply()
           .get
       trafficLightRow.trafficLight shouldBe TrafficLight.Green
@@ -119,19 +115,19 @@ class CharScalikeJDBCEnumBuiltInStyleSpec extends CharScalikeJDBCEnumSpec {
       val t = TrafficLightRow.syntax("t")
       val trafficLightRow: TrafficLightRow = withSQL {
         select.from(TrafficLightRow as t).where.eq(t.id, 3)
-      }.map(TrafficLightRow.apply).single().apply().get
+      }.map(TrafficLightRow.apply).single.apply().get
       trafficLightRow.trafficLight shouldBe TrafficLight.Green
     }
   }
 }
 
-class CharScalikeJDBCEnumPluginStyleSpec extends CharScalikeJDBCEnumSpec {
-  sealed abstract class TrafficLight(override val value: Char)
-      extends CharEnumEntry
-  object TrafficLight extends CharScalikeJDBCEnum[TrafficLight] {
-    case object Red extends TrafficLight('r')
-    case object Yellow extends TrafficLight('y')
-    case object Green extends TrafficLight('g')
+class ByteScalikeJDBCEnumPluginStyleSpec extends ByteScalikeJDBCEnumSpec {
+  sealed abstract class TrafficLight(override val value: Byte)
+      extends ByteEnumEntry
+  object TrafficLight extends ByteEnum[TrafficLight] {
+    case object Red extends TrafficLight(1)
+    case object Yellow extends TrafficLight(2)
+    case object Green extends TrafficLight(3)
 
     override val values: immutable.IndexedSeq[TrafficLight] = findValues
   }
@@ -142,7 +138,7 @@ class CharScalikeJDBCEnumPluginStyleSpec extends CharScalikeJDBCEnumSpec {
     override val columns: Seq[String] = Seq("id", "traffic_light_value")
 
     implicit val typeBinder: TypeBinder[TrafficLight] =
-      CharScalikeJDBCEnum.typeBinder(TrafficLight)
+      ByteScalikeJDBCEnum.typeBinder(TrafficLight)
 
     def apply(rs: WrappedResultSet) =
       new TrafficLightRow(rs.int("id"), rs.get("traffic_light_value"))
@@ -152,7 +148,7 @@ class CharScalikeJDBCEnumPluginStyleSpec extends CharScalikeJDBCEnumSpec {
   }
 
   implicit val parameterBinderFactory: ParameterBinderFactory[TrafficLight] =
-    CharScalikeJDBCEnum.parameterBinderFactory[TrafficLight]()
+    ByteScalikeJDBCEnum.parameterBinderFactory[TrafficLight]()
 
   describe("select") {
     it("use SQLInterpolation") { implicit dbSession =>
@@ -160,7 +156,7 @@ class CharScalikeJDBCEnumPluginStyleSpec extends CharScalikeJDBCEnumSpec {
       val trafficLightRow: TrafficLightRow =
         sql"select * from traffic_table where id = 1"
           .map(TrafficLightRow.apply)
-          .single()
+          .single
           .apply()
           .get
 
@@ -172,9 +168,10 @@ class CharScalikeJDBCEnumPluginStyleSpec extends CharScalikeJDBCEnumSpec {
     it("use QueryDSL") { implicit dbSession =>
       // exercise
       val t = TrafficLightRow.syntax("t")
+      @unchecked
       val trafficLightRow: TrafficLightRow = withSQL {
         select.from(TrafficLightRow as t).where.eq(t.id, 1)
-      }.map(TrafficLightRow.apply).single().apply().get
+      }.map(TrafficLightRow.apply).single.apply().get
 
       // verify
       trafficLightRow.id shouldBe 1
@@ -185,15 +182,14 @@ class CharScalikeJDBCEnumPluginStyleSpec extends CharScalikeJDBCEnumSpec {
   describe("insert") {
     it("use SQLInterpolation") { implicit dbSession =>
       // exercise
-      sql"insert into traffic_table (id, traffic_light_value) values (3, ${'g'})"
-        .update()
+      sql"insert into traffic_table (id, traffic_light_value) values (3, ${3})".update
         .apply() shouldBe 1
 
       // verify
       val trafficLightRow: TrafficLightRow =
         sql"select * from traffic_table where id = 3"
           .map(TrafficLightRow.apply)
-          .single()
+          .single
           .apply()
           .get
       trafficLightRow.trafficLight shouldBe TrafficLight.Green
@@ -215,7 +211,7 @@ class CharScalikeJDBCEnumPluginStyleSpec extends CharScalikeJDBCEnumSpec {
       val t = TrafficLightRow.syntax("t")
       val trafficLightRow: TrafficLightRow = withSQL {
         select.from(TrafficLightRow as t).where.eq(t.id, 3)
-      }.map(TrafficLightRow.apply).single().apply().get
+      }.map(TrafficLightRow.apply).single.apply().get
       trafficLightRow.trafficLight shouldBe TrafficLight.Green
     }
   }

@@ -6,16 +6,16 @@ import scalikejdbc.TypeBinder
 
 import java.sql.PreparedStatement
 
-trait ScalikeJDBCEnum[A <: EnumEntry] extends Enum[A] {
-  implicit val typeBinder: TypeBinder[A] = {
+trait ScalikeJDBCEnum[E <: EnumEntry] extends Enum[E] {
+  implicit val typeBinder: TypeBinder[E] = {
     ScalikeJDBCEnum.typeBinder(this)
   }
 
-  implicit val optionalTypeBinder: TypeBinder[Option[A]] = {
+  implicit val optionalTypeBinder: TypeBinder[Option[E]] = {
     ScalikeJDBCEnum.optionalTypeBinder(this)
   }
 
-  implicit val parameterBinderFactory: ParameterBinderFactory[A] = {
+  implicit val parameterBinderFactory: ParameterBinderFactory[E] = {
     ScalikeJDBCEnum.parameterBinderFactory()
   }
 }
