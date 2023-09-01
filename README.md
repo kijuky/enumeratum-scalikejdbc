@@ -56,7 +56,6 @@ object TypeBinders {
 
 - scalikejdbc 4.0.x: `enumeratum-scalikejdbc4`
 - scalikejdbc 3.5.0: `enumeratum-scalikejdbc35` 主にPlay 2.8ユーザー向け
-- scalikejdbc 3.4.2: `enumeratum-scalikejdbc34` 主にScala 2.11ユーザー向け
 
 将来的には、最新バージョン以外はサポートから外す予定です。
 

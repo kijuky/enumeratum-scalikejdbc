@@ -14,7 +14,7 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
       }
     },
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.2",
+      "com.beachape" %% "enumeratum" % "1.7.3",
       "org.scalikejdbc" %% "scalikejdbc" % "4.0.0" % Provided
     ),
     libraryDependencies ++= Seq(
@@ -33,32 +33,13 @@ lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
     crossScalaVersions := Seq("2.13.11", "2.12.18"),
     scalacOptions ++= Seq("-deprecation"),
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.2",
+      "com.beachape" %% "enumeratum" % "1.7.3",
       "org.scalikejdbc" %% "scalikejdbc" % "3.5.0" % Provided // scala-steward:off
     ),
     libraryDependencies ++= Seq(
       "com.h2database" % "h2" % "2.2.220",
       "org.scalatest" %% "scalatest" % "3.2.15", // scala-steward:off
       "org.scalikejdbc" %% "scalikejdbc-test" % "3.5.0", // scala-steward:off
-      "org.slf4j" % "slf4j-nop" % "1.7.30" // scala-steward:off
-    ).map(_ % Test),
-    Test / parallelExecution := false
-  )
-
-lazy val scalikejdbc34 = (project in file("scalikejdbc34"))
-  .settings(
-    name := "enumeratum-scalikejdbc34",
-    scalaVersion := "2.13.11",
-    crossScalaVersions := Seq("2.13.11", "2.12.18", "2.11.12"),
-    scalacOptions ++= Seq("-deprecation"),
-    libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.2",
-      "org.scalikejdbc" %% "scalikejdbc" % "3.4.2" % Provided // scala-steward:off
-    ),
-    libraryDependencies ++= Seq(
-      "com.h2database" % "h2" % "2.2.220",
-      "org.scalatest" %% "scalatest" % "3.0.9", // scala-steward:off
-      "org.scalikejdbc" %% "scalikejdbc-test" % "3.4.2", // scala-steward:off
       "org.slf4j" % "slf4j-nop" % "1.7.30" // scala-steward:off
     ).map(_ % Test),
     Test / parallelExecution := false
@@ -87,4 +68,4 @@ inThisBuild(
 
 lazy val root = (project in file(".") withId "enumeratum-scalikejdbc")
   .settings(publish / skip := true)
-  .aggregate(scalikejdbc4, scalikejdbc35, scalikejdbc34)
+  .aggregate(scalikejdbc4, scalikejdbc35)
