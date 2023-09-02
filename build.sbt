@@ -18,7 +18,7 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
       "org.scalikejdbc" %% "scalikejdbc" % "4.0.0" % Provided
     ),
     libraryDependencies ++= Seq(
-      "com.h2database" % "h2" % "2.2.220",
+      "com.h2database" % "h2" % "2.2.222",
       "org.scalatest" %% "scalatest" % "3.2.15", // scala-steward:off
       "org.scalikejdbc" %% "scalikejdbc-test" % "4.0.0",
       "org.slf4j" % "slf4j-nop" % "1.7.32" // scala-steward:off
@@ -37,7 +37,7 @@ lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
       "org.scalikejdbc" %% "scalikejdbc" % "3.5.0" % Provided // scala-steward:off
     ),
     libraryDependencies ++= Seq(
-      "com.h2database" % "h2" % "2.2.220",
+      "com.h2database" % "h2" % "2.2.222",
       "org.scalatest" %% "scalatest" % "3.2.15", // scala-steward:off
       "org.scalikejdbc" %% "scalikejdbc-test" % "3.5.0", // scala-steward:off
       "org.slf4j" % "slf4j-nop" % "1.7.30" // scala-steward:off
