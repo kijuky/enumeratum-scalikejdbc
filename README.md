@@ -54,7 +54,8 @@ object TypeBinders {
 
 利用しているscalikejdbcのバージョンに応じて、アーティファクトを選択してください。
 
-- scalikejdbc 4.0.x: `enumeratum-scalikejdbc4`
+- scalikejdbc 4.2.x: `enumeratum-scalikejdbc42` 主にPlay 3.0ユーザー向け
+- scalikejdbc 4.0.x: `enumeratum-scalikejdbc4`  主にPlay 2.9ユーザー向け
 - scalikejdbc 3.5.0: `enumeratum-scalikejdbc35` 主にPlay 2.8ユーザー向け
 
 将来的には、最新バージョン以外はサポートから外す予定です。
