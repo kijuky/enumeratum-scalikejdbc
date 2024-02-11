@@ -96,4 +96,4 @@ inThisBuild(
 
 lazy val root = (project in file(".") withId "enumeratum-scalikejdbc")
   .settings(publish / skip := true)
-  .aggregate(scalikejdbc4, scalikejdbc35)
+  .aggregate(scalikejdbc42, scalikejdbc4, scalikejdbc35)
