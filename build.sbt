@@ -43,12 +43,12 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
     },
     libraryDependencies ++= Seq(
       "com.beachape" %% "enumeratum" % "1.7.3",
-      "org.scalikejdbc" %% "scalikejdbc" % "4.0.0" % Provided
+      "org.scalikejdbc" %% "scalikejdbc" % "4.0.0" % Provided // scala-steward:off
     ),
     libraryDependencies ++= Seq(
       "com.h2database" % "h2" % "2.2.224",
       "org.scalatest" %% "scalatest" % "3.2.15", // scala-steward:off
-      "org.scalikejdbc" %% "scalikejdbc-test" % "4.0.0",
+      "org.scalikejdbc" %% "scalikejdbc-test" % "4.0.0", // scala-steward:off
       "org.slf4j" % "slf4j-nop" % "1.7.32" // scala-steward:off
     ).map(_ % Test),
     Test / parallelExecution := false
