@@ -1,8 +1,8 @@
 lazy val scalikejdbc42 = (project in file("scalikejdbc42"))
   .settings(
     name := "enumeratum-scalikejdbc42",
-    scalaVersion := "3.3.1",
-    crossScalaVersions := Seq("3.3.1", "2.13.12", "2.12.18"),
+    scalaVersion := "3.3.3",
+    crossScalaVersions := Seq("3.3.3", "2.13.12", "2.12.18"),
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) =>
@@ -30,7 +30,7 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
   .settings(
     name := "enumeratum-scalikejdbc4",
     scalaVersion := "2.13.12",
-    crossScalaVersions := Seq("3.3.1", "2.13.12", "2.12.18"),
+    crossScalaVersions := Seq("3.3.3", "2.13.12", "2.12.18"),
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) =>
