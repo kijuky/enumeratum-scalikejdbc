@@ -1,8 +1,9 @@
-lazy val scalikejdbc42 = (project in file("scalikejdbc42"))
+lazy val scalikejdbc43 = project
+  .in(file("scalikejdbc43"))
   .settings(
-    name := "enumeratum-scalikejdbc42",
-    scalaVersion := "3.3.1",
-    crossScalaVersions := Seq("3.3.1", "2.13.12", "2.12.18"),
+    name := "enumeratum-scalikejdbc43",
+    scalaVersion := "3.3.3",
+    crossScalaVersions := Seq("3.3.3", "2.13.14", "2.12.19"),
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) =>
@@ -14,23 +15,24 @@ lazy val scalikejdbc42 = (project in file("scalikejdbc42"))
       }
     },
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.3",
-      "org.scalikejdbc" %% "scalikejdbc" % "4.2.1" % Provided
+      "com.beachape" %% "enumeratum" % "1.7.4",
+      "org.scalikejdbc" %% "scalikejdbc" % "4.3.0" % Provided
     ),
     libraryDependencies ++= Seq(
       "com.h2database" % "h2" % "2.2.224",
-      "org.scalatest" %% "scalatest" % "3.2.15", // scala-steward:off
-      "org.scalikejdbc" %% "scalikejdbc-test" % "4.2.1",
-      "org.slf4j" % "slf4j-nop" % "1.7.32" // scala-steward:off
+      "org.scalatest" %% "scalatest" % "3.2.18", // scala-steward:off
+      "org.scalikejdbc" %% "scalikejdbc-test" % "4.3.0",
+      "org.slf4j" % "slf4j-nop" % "2.0.13" // scala-steward:off
     ).map(_ % Test),
     Test / parallelExecution := false
   )
 
-lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
+lazy val scalikejdbc4 = project
+  .in(file("scalikejdbc4"))
   .settings(
     name := "enumeratum-scalikejdbc4",
-    scalaVersion := "2.13.12",
-    crossScalaVersions := Seq("3.3.1", "2.13.12", "2.12.18"),
+    scalaVersion := "2.13.14",
+    crossScalaVersions := Seq("3.3.3", "2.13.14", "2.12.19"),
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((3, _)) =>
@@ -42,7 +44,7 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
       }
     },
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.3",
+      "com.beachape" %% "enumeratum" % "1.7.4",
       "org.scalikejdbc" %% "scalikejdbc" % "4.0.0" % Provided // scala-steward:off
     ),
     libraryDependencies ++= Seq(
@@ -54,14 +56,15 @@ lazy val scalikejdbc4 = (project in file("scalikejdbc4"))
     Test / parallelExecution := false
   )
 
-lazy val scalikejdbc35 = (project in file("scalikejdbc35"))
+lazy val scalikejdbc35 = project
+  .in(file("scalikejdbc35"))
   .settings(
     name := "enumeratum-scalikejdbc35",
-    scalaVersion := "2.13.12",
-    crossScalaVersions := Seq("2.13.12", "2.12.18"),
+    scalaVersion := "2.13.14",
+    crossScalaVersions := Seq("2.13.14", "2.12.19"),
     scalacOptions ++= Seq("-deprecation"),
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.3",
+      "com.beachape" %% "enumeratum" % "1.7.4",
       "org.scalikejdbc" %% "scalikejdbc" % "3.5.0" % Provided // scala-steward:off
     ),
     libraryDependencies ++= Seq(
@@ -94,6 +97,8 @@ inThisBuild(
   )
 )
 
-lazy val root = (project in file(".") withId "enumeratum-scalikejdbc")
+lazy val root = project
+  .in(file("."))
+  .withId("enumeratum-scalikejdbc")
   .settings(publish / skip := true)
-  .aggregate(scalikejdbc42, scalikejdbc4, scalikejdbc35)
+  .aggregate(scalikejdbc43, scalikejdbc4, scalikejdbc35)
