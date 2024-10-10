@@ -15,7 +15,7 @@ lazy val scalikejdbc43 = project
       }
     },
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.4",
+      "com.beachape" %% "enumeratum" % "1.7.5",
       "org.scalikejdbc" %% "scalikejdbc" % "4.3.0" % Provided
     ),
     libraryDependencies ++= Seq(
@@ -44,7 +44,7 @@ lazy val scalikejdbc4 = project
       }
     },
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.4",
+      "com.beachape" %% "enumeratum" % "1.7.5",
       "org.scalikejdbc" %% "scalikejdbc" % "4.0.0" % Provided // scala-steward:off
     ),
     libraryDependencies ++= Seq(
@@ -64,7 +64,7 @@ lazy val scalikejdbc35 = project
     crossScalaVersions := Seq("2.13.14", "2.12.19"),
     scalacOptions ++= Seq("-deprecation"),
     libraryDependencies ++= Seq(
-      "com.beachape" %% "enumeratum" % "1.7.4",
+      "com.beachape" %% "enumeratum" % "1.7.5",
       "org.scalikejdbc" %% "scalikejdbc" % "3.5.0" % Provided // scala-steward:off
     ),
     libraryDependencies ++= Seq(
